@@ -751,6 +751,7 @@ function foodTotal(){ return order.reduce((s,i) => s + i.unit * i.quantity, 0); 
 function orderItemCount(){ return order.reduce((s,i) => s + i.quantity, 0); }
 function isDelivery(){ return DELIVERY_ENABLED && orderMode === "delivery"; }
 function deliveryFee(){ return isDelivery() ? DELIVERY_FEE : 0; }
+function grandTotal(){ return foodTotal() + (order.length ? deliveryFee() : 0); }
 function depositAmount(){
   return DEPOSIT_PERCENT > 0 ? Math.ceil(foodTotal() * DEPOSIT_PERCENT / 100) : 0;
 }
@@ -800,7 +801,7 @@ function updateDeliveryUI(){
     depositRow.style.display = "none";
   }
 
-  document.getElementById("sumTotal").textContent = money(food);
+  document.getElementById("sumTotal").textContent = money(grandTotal());
 }
 
 function renderOrder(){
@@ -812,7 +813,7 @@ function renderOrder(){
   const count = orderItemCount();
 
   document.getElementById("miniCartSub").textContent = `${count} ${count === 1 ? "item" : "items"}`;
-  document.getElementById("miniCartTotal").textContent = money(foodTotal());
+  document.getElementById("miniCartTotal").textContent = money(grandTotal());
   headerCount.textContent = count;
 
   if(count > 0){
